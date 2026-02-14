@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { error } = require("console");
+// const { error } = require("console");
 
 const app = express();
 
@@ -29,10 +29,11 @@ app.post("/todos", (req, res) => {
   const { name, description, status, startDay, endDay } = req.body;
 
     if (!name) {
+      res.status(400).json({message : "Name is required"});
       return;
     }
   const newTodo = {
-    id: (todos.length += 1),
+    id: Date.now(),
     name,
     description,
     status,
@@ -45,6 +46,11 @@ app.post("/todos", (req, res) => {
   res.status(201).json(todos);
 });
 
+
+app.delete("/todos/:id",(req,res)=>{
+  const id = req.params.id
+
+})
 // const server = createServer(app);
 
 app.listen(3001, () => {
