@@ -12,8 +12,8 @@ let todos = [
     id: 1,
     name: "homework",
     description: "งาน คณิต",
-    startDay: "2026-01-12",
-    endDay: "2026-01-12",
+    startDate: "2026-01-12",
+    endDate: "2026-01-12",
     status: "",
     duration: 5,
   },
@@ -26,7 +26,7 @@ app.get("/todos", (req, res) => {
 });
 
 app.post("/todos", (req, res) => {
-  const { name, description, status, startDay, endDay } = req.body;
+  const { name, description, status, startDate, endDate } = req.body;
 
   if (!name) {
     res.status(400).json({ message: "Name is required" });
@@ -37,8 +37,8 @@ app.post("/todos", (req, res) => {
     name,
     description,
     status,
-    startDay,
-    endDay,
+    startDate,
+    endDate,
     duration: 5,
   };
 
