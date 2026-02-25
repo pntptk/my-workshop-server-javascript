@@ -21,10 +21,12 @@ let todos = [
 
 app.get("/", (req, res) => res.status(200).json(error));
 
+//
 app.get("/todos", (req, res) => {
   res.json(todos);
 });
 
+//create todo
 app.post("/todos", (req, res) => {
   const { name, description, status, startDate, endDate } = req.body;
 
@@ -46,6 +48,7 @@ app.post("/todos", (req, res) => {
   res.status(201).json(todos);
 });
 
+//delete todo
 app.delete("/todos/:id", (req, res) => {
   const id = req.params.id;
 
@@ -60,6 +63,7 @@ app.delete("/todos/:id", (req, res) => {
   res.status(200).json({ message: "ลบสำเร็จ", todos });
 });
 
+//update todo
 app.put("/todos/:id", (req, res) => {
   const id = req.params.id;
   const { name, description, status } = req.body;
@@ -70,11 +74,32 @@ app.put("/todos/:id", (req, res) => {
     todos[index] = { ...todos[index], name, description, status };
     return res.status(200).json({ message: "update data", todos });
   } else {
-    return res.status(404).json({message : "not found id",todos});
+    return res.status(404).json({ message: "not found id", todos });
   }
 });
-// const server = createServer(app);
 
+//update status todo
+app.patch("/todos/:id", (req, res) => {
+  const id = req.params.id;
+  const {status} = req.body;
+  const index = todos.findIndex((t) => t.id === parseInt(id));
+
+  if (index !== -1) {
+    todos[index].status = status
+
+
+    return res.status(200).json({
+      message : "Status updated",
+      data: todos[index]
+    })
+  }
+
+  return res.status(404).json({message : "Todo not found"});
+
+
+});
+
+// const server = createServer(app);
 app.listen(3001, () => {
   console.log(`server running at http://localhost:3001`);
 });
