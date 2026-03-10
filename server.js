@@ -66,12 +66,12 @@ app.delete("/todos/:id", (req, res) => {
 //update todo
 app.put("/todos/:id", (req, res) => {
   const id = req.params.id;
-  const { name, description, status } = req.body;
+  const { name, description, status ,startDate,endDate} = req.body;
 
   const index = todos.findIndex((t) => t.id === parseInt(id));
 
   if (index !== -1) {
-    todos[index] = { ...todos[index], name, description, status };
+    todos[index] = { ...todos[index], name, description, status,startDate,endDate };
     return res.status(200).json({ message: "update data", todos });
   } else {
     return res.status(404).json({ message: "not found id", todos });
