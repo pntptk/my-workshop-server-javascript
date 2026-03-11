@@ -1,23 +1,34 @@
 const express = require("express");
 const cors = require("cors");
-// const { error } = require("console");
+
+const fs = require("fs");
+const path = require("path");
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
 
-let todos = [
-  {
-    id: 1,
-    name: "homework",
-    description: "งาน คณิต",
-    startDate: "2026-01-12",
-    endDate: "2026-01-12",
-    status: "",
-    duration: 5,
-  },
-];
+//สร้างไฟล์ชื่อ todo.json
+const TODO_FILE = path.join(__dirname, "todo.json");
+
+let todos = loadData(TODO_FILE);
+function loadData(file, defaultData = []) {
+  try {
+    if (fs.existsSync(file)) {
+      return JSON.parse(fs.readFileSync(file, "utf-8"));
+    }
+    fs.writeFileSync(file, JSON.stringify(defaultData, null, 2));
+
+    return defaultData;
+  } catch (err) {
+    console.log("Load error ", err);
+  }
+}
+
+function saveData(file, data) {
+  fs.writeFileSync(file, JSON.stringify(data, null, 2));
+}
 
 app.get("/", (req, res) => res.status(200).json(error));
 
@@ -45,6 +56,7 @@ app.post("/todos", (req, res) => {
   };
 
   todos.push(newTodo);
+  saveData(TODO_FILE, todos);
   res.status(201).json(todos);
 });
 
@@ -59,19 +71,28 @@ app.delete("/todos/:id", (req, res) => {
   if (todos.length === initialLength) {
     return res.status(404).json({ message: "ไม่พบข้อมูลที่ต้องการ" });
   }
-
+  saveData(TODO_FILE, todos);
   res.status(200).json({ message: "ลบสำเร็จ", todos });
 });
 
 //update todo
 app.put("/todos/:id", (req, res) => {
   const id = req.params.id;
-  const { name, description, status ,startDate,endDate} = req.body;
+  const { name, description, status, startDate, endDate } = req.body;
 
   const index = todos.findIndex((t) => t.id === parseInt(id));
 
   if (index !== -1) {
-    todos[index] = { ...todos[index], name, description, status,startDate,endDate };
+    todos[index] = {
+      ...todos[index],
+      name,
+      description,
+      status,
+      startDate,
+      endDate,
+    };
+    saveData(TODO_FILE, todos);
+
     return res.status(200).json({ message: "update data", todos });
   } else {
     return res.status(404).json({ message: "not found id", todos });
@@ -81,22 +102,20 @@ app.put("/todos/:id", (req, res) => {
 //update status todo
 app.patch("/todos/:id", (req, res) => {
   const id = req.params.id;
-  const {status} = req.body;
+  const { status } = req.body;
   const index = todos.findIndex((t) => t.id === parseInt(id));
 
   if (index !== -1) {
-    todos[index].status = status
-
+    todos[index].status = status;
+    saveData(TODO_FILE, todos);
 
     return res.status(200).json({
-      message : "Status updated",
-      data: todos[index]
-    })
+      message: "Status updated",
+      data: todos[index],
+    });
   }
 
-  return res.status(404).json({message : "Todo not found"});
-
-
+  return res.status(404).json({ message: "Todo not found" });
 });
 
 // const server = createServer(app);
