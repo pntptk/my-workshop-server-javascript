@@ -13,6 +13,8 @@ app.use(cors());
 const TODO_FILE = path.join(__dirname, "todo.json");
 
 let todos = loadData(TODO_FILE);
+
+
 function loadData(file, defaultData = []) {
   try {
     if (fs.existsSync(file)) {
