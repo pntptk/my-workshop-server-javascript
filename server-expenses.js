@@ -9,11 +9,11 @@ app.use(express.json());
 let data = [
   {
     id: "1234324",
-    title: "",
+    title: "test",
     amount: 12,
-    type: "INCOME" | "EXPENSE",
-    category: "",
-    date: "",
+    type: "INCOME",
+    category: "test",
+    date: "15/3/2569",
   },
 ];
 
